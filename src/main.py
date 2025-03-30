@@ -8,8 +8,8 @@ from src.core.database import start_db, dispose_engine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-	await start_db()
-	print('Бд запущена')
+	# await start_db()
+	# print('Бд запущена')
 	yield
 
 

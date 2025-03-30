@@ -26,6 +26,11 @@ class Settings(BaseSettings):
 	JWT_ACCESS_LIFESPAN_MINUTES: int = 15
 	JWT_REFRESH_LIFESPAN_DAYS: int = 10
 
+	#--- AUDIO ---
+	AUDIO_PATH: str = "media"
+	AUDIO_ALLOWED_TYPES: list = ["mp3", "wav", "flac", "aac", "ogg"]
+	AUDIO_FILENAME_PATTERN: str = r"^[a-zA-Z0-9_\-\.]+$"
+
 	model_config = SettingsConfigDict(env_file='.env')
 
 settings = Settings()
