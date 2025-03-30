@@ -6,9 +6,9 @@ from src.core.database import Base
 class FileModel(Base):
 	__tablename__ = 'files'
 
-	id: Mapped[int] = mapped_column(primary_key=True)
+	id: Mapped[int] = mapped_column(primary_key=True, index=True)
 	filename: Mapped[str]
-	filepath: Mapped[str] = mapped_column(unique=True)
+	filepath: Mapped[str] = mapped_column(unique=True, index=True)
 	user_id: Mapped[int] = mapped_column(ForeignKey('users.id', ondelete='CASCADE'))
 
 	user = relationship('UserModel', back_populates='files')

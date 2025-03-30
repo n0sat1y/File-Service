@@ -5,9 +5,9 @@ from src.core.database import Base
 class UserModel(Base):
 	__tablename__ = 'users'
 
-	id: Mapped[int] = mapped_column(primary_key=True)
+	id: Mapped[int] = mapped_column(primary_key=True, index=True)
 	yandex_id: Mapped[str] = mapped_column(unique=True, nullable=True)
-	email: Mapped[str] = mapped_column(unique=True)
+	email: Mapped[str] = mapped_column(unique=True, index=True)
 	password: Mapped[str] = mapped_column(nullable=True)
 	first_name: Mapped[str] = mapped_column(nullable=True)
 	last_name: Mapped[str] = mapped_column(nullable=True)
