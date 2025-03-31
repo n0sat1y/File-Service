@@ -2,8 +2,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
 	#--- SITE ---
-	HTTPS: bool = True
-	API_URL: str = 'https://hkx7orygw.localto.net'
+	HTTPS: bool = False
+	API_URL: str = 'http://localhost:8000'
 
 	#--- PREFIX ---
 	API_PREFIX: str = '/api/v1'
