@@ -33,7 +33,8 @@ class Settings(BaseSettings):
 	#--- AUDIO ---
 	AUDIO_PATH: str = "media"
 	AUDIO_ALLOWED_TYPES: list = ["mp3", "wav", "flac", "aac", "ogg"]
-	AUDIO_FILENAME_PATTERN: str = r"^[a-zA-Z0-9_\-\.]+$"
+	AUDIO_FILENAME_PATTERN: str = r"^[a-zA-Zа-яА-Я0-9_\-]{1,255}"
+
 
 	model_config = SettingsConfigDict(env_file='.env')
 
