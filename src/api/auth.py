@@ -4,7 +4,7 @@ from fastapi.responses import RedirectResponse
 
 from src.core.config import settings
 from src.dependencies import SessionDep
-from src.services import AuthService
+from src.services import AuthService, UserService
 from src.utils import decode_jwt, encode_access_jwt, encode_refresh_jwt
 from src.dependencies import require_refresh_token
 
@@ -26,7 +26,7 @@ async def yandex_callback(
 	code: str = Query(...)
 ):
 	user_data = await AuthService.get_yandex_userdata(code)
-	model_user = await AuthService.get_or_create_user(session, user_data)
+	model_user = await UserService.get_or_create_user(session, user_data)
 	response.set_cookie(
 		key="access", 
 		value=encode_access_jwt({'sub': model_user.email}), 
@@ -45,7 +45,7 @@ async def yandex_callback(
 	)
 	return {'massage': 'Success'}
 
-@router.get('/refresh')
+@router.post('/refresh')
 async def refresh_token(
 	response: Response,
 	refresh_data: str = Depends(require_refresh_token),

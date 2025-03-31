@@ -22,27 +22,24 @@ def require_refresh_token(request: Request):
 async def require_access_token(request: Request, response_api: Response):
     access_token = request.cookies.get('access')
     if not access_token:
-        try:
-            async with AsyncClient() as client:
-                response = await client.get(
-                    url=f"{settings.API_URL}{settings.API_PREFIX}/auth/refresh",
-                    cookies=request.cookies
-                )
-                if response.status_code == 401:
-                    raise HTTPException(status_code=401, detail="Not authorized")
-                access_token = response.cookies.get('access')
-                if not access_token:
-                    raise HTTPException(status_code=401, detail="Failed to refresh access token")
-                response_api.set_cookie(
-                    key="access",
-                    value=access_token,
-                    httponly=True,
-                    secure=settings.HTTPS,
-                    samesite="lax",
-                    max_age=settings.JWT_ACCESS_LIFESPAN_MINUTES * 60
-                )
-        except Exception as e:
-            raise HTTPException(status_code=401, detail="Authentication failed")
+        async with AsyncClient() as client:
+            response = await client.get(
+                url=f"{settings.API_URL}{settings.API_PREFIX}/auth/refresh",
+                cookies=request.cookies
+            )
+            if response.status_code == 401:
+                raise HTTPException(status_code=401, detail="Not authorized")
+            access_token = response.cookies.get('access')
+            if not access_token:
+                raise HTTPException(status_code=401, detail="Failed to refresh access token")
+            response_api.set_cookie(
+                key="access",
+                value=access_token,
+                httponly=True,
+                secure=settings.HTTPS,
+                samesite="lax",
+                max_age=settings.JWT_ACCESS_LIFESPAN_MINUTES * 60
+            )
 
     try:
         decoded_token = decode_jwt(access_token)
@@ -56,10 +53,10 @@ async def get_current_user(
 ) -> UserModel:
 	user = await UserRepository.get_user_by_email(session, user_email)
 	if not user:
-		raise HTTPException(status_code=401, detail='User not found')
+		raise HTTPException(status_code=401, detail='Current user not found')
 	return user
 
 async def require_superuser(user: UserModel = Depends(get_current_user)):
 	if user.is_superuser:
 		return user
-	raise HTTPException(status_code=401, detail='Not enough permissions')
+	raise HTTPException(status_code=403, detail='Not enough permissions')

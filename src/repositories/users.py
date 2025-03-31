@@ -6,6 +6,22 @@ from src.models import UserModel
 
 class UserRepository:
 	@classmethod
+	async def get_all(cls, session: AsyncSession):
+		try:
+			return (await session.execute(select(UserModel))).scalars().all()
+		except Exception as e:
+			raise HTTPException(status_code=500, detail=f"Database error: {e}")
+
+	@classmethod
+	async def get_user_by_id(cls, session: AsyncSession, id: int):
+		try:
+			return (await session.execute(
+				select(UserModel).where(UserModel.id == id)
+			)).scalar_one_or_none()
+		except Exception as e:
+			raise HTTPException(status_code=500, detail=f"Database error: {e}")
+
+	@classmethod
 	async def get_user_by_yandex_id(cls, session: AsyncSession, yandex_id: str):
 		try:
 			return (await session.execute(
@@ -49,6 +65,14 @@ class UserRepository:
 			await session.commit()
 			await session.refresh(user)
 			return user
+		except Exception as e:
+			raise HTTPException(status_code=500, detail=f"Database error: {e}")
+		
+	@classmethod
+	async def delete(cls, session: AsyncSession, user: UserModel) -> None:
+		try:
+			await session.delete(user)
+			await session.commit()
 		except Exception as e:
 			raise HTTPException(status_code=500, detail=f"Database error: {e}")
 		

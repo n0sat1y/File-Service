@@ -36,9 +36,4 @@ class AuthService:
 		except Exception as e:
 			raise HTTPException(status_code=400, detail=f"Yandex auth error: {e}")
 		
-	@classmethod
-	async def get_or_create_user(cls, session, user_data):
-		user = await UserRepository.get_user_by_yandex_id(session, user_data['id'])
-		if not user:
-			user = await UserRepository.create_user(session, user_data)
-		return user
+	

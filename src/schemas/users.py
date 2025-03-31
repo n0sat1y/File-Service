@@ -9,3 +9,7 @@ class UpdateUser(BaseModel):
 class GetUserChema(UpdateUser):
 	id: int
 	email: EmailStr
+
+class GetExtendedUserChema(GetUserChema):
+	is_superuser: bool
+	yandex_id: str
