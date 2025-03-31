@@ -11,7 +11,7 @@ from src.dependencies import require_refresh_token
 
 router = APIRouter(prefix="/auth", tags=['Authentication'])
 
-@router.get('/yandex')
+@router.get('/yandex', summary='Yandex auth')
 async def yandex_auth():
 	return RedirectResponse(
         f"https://oauth.yandex.ru/authorize?"
@@ -45,7 +45,7 @@ async def yandex_callback(
 	)
 	return {'massage': 'Success'}
 
-@router.post('/refresh')
+@router.post('/refresh', summary='Refresh access token')
 async def refresh_token(
 	response: Response,
 	refresh_data: str = Depends(require_refresh_token),

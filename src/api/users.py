@@ -9,11 +9,11 @@ from src.repositories.users import UserRepository
 router = APIRouter(prefix="/users", tags=['Users'])
 
 
-@router.get('/me')
+@router.get('/me', summary='Get current user data')
 async def get_me(user: UserModel = Depends(get_current_user)) -> GetUserChema:
 	return GetUserChema(**user.__dict__)
 
-@router.patch('/me')
+@router.patch('/me', summary='Update current user data')
 async def update_me(
 	session: SessionDep,
 	update_data: UpdateUser,

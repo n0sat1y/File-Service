@@ -11,7 +11,7 @@ from src.schemas import FileSchema
 
 router = APIRouter(prefix="/files", tags=['Audio Files'])
 
-@router.post('/upload')
+@router.post('/upload', summary='Upload file', description='Custom filename must consist of 1 to 255 characters and include only Latin letters (a-z, A-Z), Cyrillic letters (а-я, А-Я), numbers (0-9), underscores (_), or hyphens (-). No other characters or empty strings are allowed. If a filename is not provided, it will be retrieved from the uploaded file.')
 async def upload_file(
 	session: SessionDep,
 	user: UserModel = Depends(get_current_user),
@@ -27,7 +27,7 @@ async def upload_file(
 		filepath=uploaded_file.filepath,
 	)
 
-@router.get('')
+@router.get('', summary='Get all files')
 async def get_files(
 	session: SessionDep,
 	user: UserModel = Depends(get_current_user),
