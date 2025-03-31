@@ -1,5 +1,6 @@
 from typing import Annotated
 from fastapi import Depends, HTTPException, Request
+import jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from httpx import AsyncClient
 
@@ -19,15 +20,27 @@ def require_refresh_token(request: Request):
 	return decode_jwt(refresh_token).get('sub')
 
 async def require_access_token(request: Request):
-	access_token = request.cookies.get('access')
-	if not access_token:
-		async with AsyncClient() as client:
-			response = await client.get(
-				url=f"{settings.API_URL}{settings.API_PREFIX}/auth/refresh",
-			)
-			response.raise_for_status()
-			access_token = response.cookies.get('access')
-	return decode_jwt(access_token).get('sub')
+    access_token = request.cookies.get('access')
+    if not access_token:
+        try:
+            async with AsyncClient() as client:
+                response = await client.get(
+                    url=f"{settings.API_URL}{settings.API_PREFIX}/auth/refresh",
+                    cookies=request.cookies
+                )
+                if response.status_code == 401:
+                    raise HTTPException(status_code=401, detail="Noy authorized")
+                access_token = response.cookies.get('access')
+                if not access_token:
+                    raise HTTPException(status_code=401, detail="Failed to refresh access token")
+        except Exception as e:
+            raise HTTPException(status_code=401, detail="Authentication failed")
+
+    try:
+        decoded_token = decode_jwt(access_token)
+        return decoded_token.get('sub')
+    except jwt.exceptions.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid access token")
 
 async def get_current_user(
 	session: SessionDep,

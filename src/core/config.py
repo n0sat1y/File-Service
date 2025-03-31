@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
 	#--- SITE ---
 	HTTPS: bool = True
-	API_URL: str = 'https://hkx7orygw.localto.net/'
+	API_URL: str = 'https://hkx7orygw.localto.net'
 
 	#--- PREFIX ---
 	API_PREFIX: str = '/api/v1'
@@ -27,7 +27,7 @@ class Settings(BaseSettings):
 	#--- JWT ---
 	SECRET_KEY: str
 	JWT_ALGORITHM: str = 'HS256'
-	JWT_ACCESS_LIFESPAN_MINUTES: int = 15
+	JWT_ACCESS_LIFESPAN_MINUTES: int = 1
 	JWT_REFRESH_LIFESPAN_DAYS: int = 10
 
 	#--- AUDIO ---
