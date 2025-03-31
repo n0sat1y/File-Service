@@ -4,7 +4,7 @@ from src.dependencies import SessionDep, require_superuser, get_current_user
 from src.models import UserModel
 from src.repositories import UserRepository
 from src.schemas import GetExtendedUserChema, UpdateUser
-from src.services import UserService
+from src.services import UserService, FileService
 
 
 router = APIRouter(prefix="/admin", tags=['Admin'])
@@ -46,5 +46,6 @@ async def delete_user(
 	user: UserModel = Depends(get_current_user),
 ) -> dict:
 	get_user = await UserService.get_user_by_id(session, user_id)
+	await FileService.delete_all(get_user)
 	await UserRepository.delete(session, get_user)
 	return {'message': 'Success'}

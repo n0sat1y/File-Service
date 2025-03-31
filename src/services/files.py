@@ -34,3 +34,23 @@ class FileService:
 		if not uploaded_file:
 			raise HTTPException(status_code=500, detail="Failed to save file.")
 		return uploaded_file
+	
+	@classmethod
+	async def delete_all(cls, user: UserModel):
+		file_path = Path(settings.AUDIO_PATH) / user.email
+		if file_path.exists():
+			for file in file_path.iterdir():
+				try:
+					file.unlink()
+				except Exception as e:
+					raise HTTPException(
+						status_code=500, 
+						detail=f"Failed to delete file {file.name}: {str(e)}"
+					)
+			try:
+				file_path.rmdir()
+			except Exception as e:
+				raise HTTPException(
+					status_code=500, 
+					detail=f"Failed to delete user directory: {str(e)}"
+				)
