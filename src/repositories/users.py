@@ -1,10 +1,10 @@
+from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException
 
 from src.models import UserModel
 
-class AuthRepository:
+class UserRepository:
 	@classmethod
 	async def get_user_by_yandex_id(cls, session: AsyncSession, yandex_id: str):
 		try:
@@ -15,7 +15,7 @@ class AuthRepository:
 			raise HTTPException(status_code=500, detail=f"Database error: {e}")
 		
 	@classmethod
-	async def create_user(cls, session: AsyncSession, user_data: dict):
+	async def create(cls, session: AsyncSession, user_data: dict):
 		try:
 			user = UserModel(
 				yandex_id=user_data['id'],
@@ -39,3 +39,16 @@ class AuthRepository:
 			)).scalar_one_or_none()
 		except Exception as e:
 			raise HTTPException(status_code=500, detail=f"Database error: {e}")
+		
+	@classmethod
+	async def update(cls, session: AsyncSession, user: UserModel, update_data: dict) -> UserModel:
+		try:
+			for key, value in update_data.items():
+				setattr(user, key, value)
+			session.add(user)
+			await session.commit()
+			await session.refresh(user)
+			return user
+		except Exception as e:
+			raise HTTPException(status_code=500, detail=f"Database error: {e}")
+		

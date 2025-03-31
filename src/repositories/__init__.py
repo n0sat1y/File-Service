@@ -1,5 +1,5 @@
-from src.repositories.auth import AuthRepository
+from src.repositories.users import UserRepository
 
 __all__ = [
-	"AuthRepository",
+	'UserRepository',
 ]

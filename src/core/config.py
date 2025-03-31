@@ -27,7 +27,7 @@ class Settings(BaseSettings):
 	#--- JWT ---
 	SECRET_KEY: str
 	JWT_ALGORITHM: str = 'HS256'
-	JWT_ACCESS_LIFESPAN_MINUTES: int = 1
+	JWT_ACCESS_LIFESPAN_MINUTES: int = 60
 	JWT_REFRESH_LIFESPAN_DAYS: int = 10
 
 	#--- AUDIO ---

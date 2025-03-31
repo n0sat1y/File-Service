@@ -2,7 +2,7 @@ from httpx import AsyncClient, _exceptions
 from fastapi import HTTPException
 
 from src.core.config import settings
-from src.repositories import AuthRepository
+from src.repositories import UserRepository
 
 
 class AuthService:
@@ -38,7 +38,7 @@ class AuthService:
 		
 	@classmethod
 	async def get_or_create_user(cls, session, user_data):
-		user = await AuthRepository.get_user_by_yandex_id(session, user_data['id'])
+		user = await UserRepository.get_user_by_yandex_id(session, user_data['id'])
 		if not user:
-			user = await AuthRepository.create_user(session, user_data)
+			user = await UserRepository.create_user(session, user_data)
 		return user
